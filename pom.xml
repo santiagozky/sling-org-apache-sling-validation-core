@@ -37,8 +37,8 @@
 
     <scm>
         <connection>scm:git:https://gitbox.apache.org/repos/asf/sling-org-apache-sling-validation-core.git</conncetion>
-        <developerConnection> scm:svn:https://svn.apache.org/repos/asf/sling/trunk/bundles/extensions/validation/core</developerConnection>
-        <url>https://gitbox.apache.org/repos/asf?p=sling-org-apache-sling-validation-core.git.git</url>
+        <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/sling-org-apache-sling-validation-core.git</developerConnection>
+        <url>https://gitbox.apache.org/repos/asf?p=sling-org-apache-sling-validation-core.git</url>
     </scm>
 
     <name>Apache Sling Validation Framework Core Implementation</name>
