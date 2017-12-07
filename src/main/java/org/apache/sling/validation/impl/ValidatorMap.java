@@ -30,10 +30,7 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Helper class which encapsulates a map of {@link Validator}s with their meta information.
- *
- */
+/** Helper class which encapsulates a map of {@link Validator}s with their meta information. */
 public class ValidatorMap {
 
     final static class ValidatorMetadata implements Comparable<ValidatorMetadata> {
@@ -57,7 +54,6 @@ public class ValidatorMap {
             return serviceReference.compareTo(o.serviceReference);
         }
 
-        
         @Override
         public int hashCode() {
             final int prime = 31;
@@ -97,7 +93,8 @@ public class ValidatorMap {
 
         @Override
         public String toString() {
-            return "Entry [validator=" + validator + ", severity=" + severity + ", type=" + type + ", from bundle '" + serviceReference.getBundle().getSymbolicName() + "'"
+            return "Entry [validator=" + validator + ", severity=" + severity + ", type=" + type + ", from bundle '"
+                    + serviceReference.getBundle().getSymbolicName() + "'"
                     + "]";
         }
 
@@ -112,17 +109,18 @@ public class ValidatorMap {
         public @Nonnull Class<?> getType() {
             return type;
         }
-        
+
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(ValidatorMap.class);
     private final Map<String, ValidatorMetadata> validatorMap;
-    
+
     public ValidatorMap() {
         validatorMap = new ConcurrentHashMap<>();
     }
 
-    private String getValidatorIdFromServiceProperties(Map<String, Object> properties, @SuppressWarnings("rawtypes") Class<? extends Validator> validatorClass,
+    private String getValidatorIdFromServiceProperties(Map<String, Object> properties,
+            @SuppressWarnings("rawtypes") Class<? extends Validator> validatorClass,
             ServiceReference<Validator<?>> serviceReference) {
         Object id = properties.get(Validator.PROPERTY_VALIDATOR_ID);
         if (id == null) {
@@ -138,12 +136,13 @@ public class ValidatorMap {
         }
         return (String) id;
     }
-    
+
     private Integer getValidatorSeverityFromServiceProperties(Map<String, Object> properties, Validator<?> validator,
             ServiceReference<Validator<?>> serviceReference) {
         Object severity = properties.get(Validator.PROPERTY_VALIDATOR_SEVERITY);
         if (severity == null) {
-            LOG.debug("Validator '{}' is not setting an explicit severity via the OSGi service property {}", validator.getClass().getName(), Validator.PROPERTY_VALIDATOR_SEVERITY);
+            LOG.debug("Validator '{}' is not setting an explicit severity via the OSGi service property {}", validator.getClass().getName(),
+                    Validator.PROPERTY_VALIDATOR_SEVERITY);
             return null;
         }
         if (!(severity instanceof Integer)) {
@@ -155,7 +154,8 @@ public class ValidatorMap {
         return (Integer) severity;
     }
 
-    public void put(@Nonnull Map<String, Object> properties, @Nonnull Validator<?> validator, ServiceReference<Validator<?>> serviceReference) {
+    public void put(@Nonnull Map<String, Object> properties, @Nonnull Validator<?> validator,
+            ServiceReference<Validator<?>> serviceReference) {
         String validatorId = getValidatorIdFromServiceProperties(properties, validator.getClass(), serviceReference);
         Integer severity = getValidatorSeverityFromServiceProperties(properties, validator, serviceReference);
         put(validatorId, validator, serviceReference, severity);
@@ -181,7 +181,8 @@ public class ValidatorMap {
         validatorMap.put(id, entry);
     }
 
-    public void update(@Nonnull Map<String, Object> properties, @Nonnull Validator<?> validator, ServiceReference<Validator<?>> serviceReference) {
+    public void update(@Nonnull Map<String, Object> properties, @Nonnull Validator<?> validator,
+            ServiceReference<Validator<?>> serviceReference) {
         String validatorId = getValidatorIdFromServiceProperties(properties, validator.getClass(), serviceReference);
         Integer severity = getValidatorSeverityFromServiceProperties(properties, validator, serviceReference);
         update(validatorId, validator, serviceReference, severity);
@@ -198,18 +199,19 @@ public class ValidatorMap {
         for (java.util.Iterator<ValidatorMetadata> iterator = validatorMap.values().iterator(); iterator.hasNext();) {
             ValidatorMetadata value = iterator.next();
             if (value.serviceReference.equals(serviceReference)) {
-               iterator.remove();
-               return true;
+                iterator.remove();
+                return true;
             }
         }
         return false;
     }
 
-    public boolean remove(@Nonnull Map<String, Object> properties, @Nonnull Validator<?> validator, ServiceReference<Validator<?>> serviceReference) {
+    public boolean remove(@Nonnull Map<String, Object> properties, @Nonnull Validator<?> validator,
+            ServiceReference<Validator<?>> serviceReference) {
         String validatorId = getValidatorIdFromServiceProperties(properties, validator.getClass(), serviceReference);
         return remove(validatorId, serviceReference);
     }
-    
+
     public boolean remove(String id, ServiceReference<Validator<?>> serviceReference) {
         // only actually remove if the service reference is equal
         if (id == null) {
@@ -222,9 +224,12 @@ public class ValidatorMap {
         } else {
             // only actually remove if the service reference is equal
             if (entry.serviceReference.equals(serviceReference)) {
+                validatorMap.remove(id);
                 return true;
             } else {
-                LOG.warn("Could not remove validator with id '{}' from map because it is only contained with a different service reference!", id);
+                LOG.warn(
+                        "Could not remove validator with id '{}' from map because it is only contained with a different service reference!",
+                        id);
                 return false;
             }
         }
